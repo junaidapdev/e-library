@@ -3,6 +3,7 @@ import createHttpError, { HttpError } from 'http-errors';
 import { config } from './config/config';
 import { error } from 'console';
 import globalErrorHandler from './middlewares/GlobalErrorHandler';
+import userRouter from './User/userRoute';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get('/', (req, res, next) => {
     res.json({message: 'Welcome to Elibrary!'});
 })
 
+app.use('/api/users', userRouter);
 
 // Gloabal Error handler
 app.use(globalErrorHandler);
