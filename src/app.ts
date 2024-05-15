@@ -1,27 +1,21 @@
-import express, {NextFunction, Request, Response} from 'express';
-import createHttpError, { HttpError } from 'http-errors';
-import { config } from './config/config';
-import { error } from 'console';
-import globalErrorHandler from './middlewares/GlobalErrorHandler';
-import userRouter from './User/userRoute';
+import express, { NextFunction, Request, Response } from "express";
+
+import globalErrorHandler from "./middlewares/globalErrorHandler";
+import userRouter from "./user/userRouter";
 
 const app = express();
 app.use(express.json());
 
-// Routes 
-// Http Methods : Get, POST, PUT, DELETE, PATCH
-app.get('/', (req, res, next) => {
-    
+// Routes
+// Http methods: GET, POST, PUT, PATCH, DELETE
+app.get("/", (req, res, next) => {
+  res.json({ message: "Welcome to elib apis" });
+});
 
-    const error = createHttpError(400, 'something went wrong');
-    throw error;
+app.use("/api/users", userRouter);
 
-    res.json({message: 'Welcome to Elibrary!'});
-})
-
-app.use('/api/users', userRouter);
-
-// Gloabal Error handler
+// Global error handler
 app.use(globalErrorHandler);
 
-export default app
+export default app;
+
