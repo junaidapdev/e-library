@@ -1,10 +1,10 @@
 import express from "express";
-import { createBook, ListBooks, updateBook, getSingleBook } from "./bookController";
+import { createBook, ListBooks, updateBook, getSingleBook, deleteBook } from "./bookController";
 import multer from "multer";
 import path from "node:path";
 import authenticate from "../middlewares/authenticate";
 
-const userRouter = express.Router();
+const bookRouter = express.Router();
 
 // File Store
 
@@ -14,22 +14,26 @@ const upload = multer({
 })
 
 // routes
-userRouter.post("/", authenticate ,upload.fields([
+bookRouter.post("/", authenticate ,upload.fields([
     {name:'coverImage', maxCount: 1},
     {name:'file', maxCount: 1},
 ]), createBook);
 
 
-userRouter.put("/:bookId", authenticate ,upload.fields([
+bookRouter.put("/:bookId", authenticate ,upload.fields([
     {name:'coverImage', maxCount: 1},
     {name:'file', maxCount: 1},
 ]), updateBook);
 
-userRouter.get('/', ListBooks)
+bookRouter.get('/', ListBooks)
 
-userRouter.get('/:bookId', getSingleBook)
+bookRouter.get('/:bookId', getSingleBook)
+
+bookRouter.delete('/:bookId',authenticate, deleteBook)
 
 
-export default userRouter;
+
+
+export default bookRouter;
 
 
