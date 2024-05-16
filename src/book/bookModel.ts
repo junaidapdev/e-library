@@ -1,37 +1,29 @@
-// import mongoose from "mongoose";
-// import { Book } from "./bookTypes";
+import mongoose, { Schema, Document } from "mongoose";
 
-// const bookSchema = new mongoose.Schema<Book>(
-//   {
-//     title: {
-//       type: String,
-//       required: true,
-//     },
-//     author: {
-//       typeof: mongoose.Schema.Types.ObjectId,
-//       required: true,
-//     },
-//     coverImage: {
-//       type: String,
-//       required: true,
-//     },
-//     file: {
-//       type: String,
-//       requied: true,
-//     },
-//     genre: {
-//       type: String,
-//       required: true,
-//     },
-//   },
-//   { timestamps: true }
-// );
+// Define an interface for Author
+interface Author extends Document {
+  name: string;
+  // Add other properties of Author if needed
+}
 
-// export default mongoose.model<Book>("Book", bookSchema);
+// Define a schema for Author
+const authorSchema = new Schema<Author>({
+  name: { type: String, required: true }
+});
 
-import mongoose from "mongoose";
-import { Book } from "./bookTypes";
+// Define a model for Author
+const AuthorModel = mongoose.model<Author>("Author", authorSchema);
 
+// Define the Book interface
+interface Book extends Document {
+  title: string;
+  author: Author; // Reference the Author interface
+  coverImage: string;
+  file: string;
+  genre: string;
+}
+
+// Define the Book schema
 const bookSchema = new mongoose.Schema<Book>(
   {
     title: {
@@ -39,8 +31,9 @@ const bookSchema = new mongoose.Schema<Book>(
       required: true,
     },
     author: {
-      typeof: mongoose.Schema.Types.ObjectId,
-      // required: true,
+      type: Schema.Types.ObjectId,
+      ref: 'Author', // reference to the Author model
+      required: true,
     },
     coverImage: {
       type: String,
@@ -48,7 +41,7 @@ const bookSchema = new mongoose.Schema<Book>(
     },
     file: {
       type: String,
-      requied: true,
+      required: true,
     },
     genre: {
       type: String,
@@ -58,4 +51,5 @@ const bookSchema = new mongoose.Schema<Book>(
   { timestamps: true }
 );
 
+export { Book, Author, AuthorModel };
 export default mongoose.model<Book>("Book", bookSchema);
