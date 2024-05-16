@@ -1,6 +1,46 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, raw, Request, Response } from "express";
+import cloudinary from '../config/cloudinary'
+import path from 'node:path'
 
 const createBook = async (req: Request, res: Response, next: NextFunction)  => {
+
+    // Log uploaded files
+    console.log('files', req.files);
+
+    // Extract uploaded files
+
+    const files = req.files as {[fieldname: string]: Express.Multer.File[]}
+
+    // Get MIME type of the cover image file
+    const coverImageMimeType = files.coverImage[0].mimetype.split('/').at(-1);
+
+    // Extract filename and construct file path for the cover image
+    const fileName = files.coverImage[0].filename;
+    const filePath = path.resolve(__dirname, '../../public/data/uploads/', fileName)
+
+
+    // Upload cover image to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(filePath, {
+        filename_Override: fileName,
+        folder: 'book-covers',
+        format: coverImageMimeType
+    })
+
+    // Extract filename and construct file path for the book PDF file
+    const bookFileName = files.file[0].filename;
+    const bookFilePath = path.resolve(__dirname, '../../public/data/uploads/', bookFileName);
+
+    // Upload book PDF file to Cloudinary
+    const bookFileUploadResult = await cloudinary.uploader.upload(bookFilePath, {
+        resource_type: 'raw', 
+        filename_Override: bookFileName,
+        folder: 'book-pdfs',
+        format: 'pdf'
+    })
+    
+    console.log('bookFileUploadResult', bookFileUploadResult);
+    
+
     res.json({})
 
 }
